@@ -16,6 +16,10 @@ const app = express();
 
 // Middleware
 
+
+
+app.use(express.json())
+app.use(morgan("dev"))
 app.use(
   cors({
     origin: [
@@ -25,10 +29,6 @@ app.use(
     credentials: true,
   })
 );
-
-app.use(express.json())
-app.use(morgan("dev"))
-
 
 // Test route
 app.get("/",(req,res)=>{
