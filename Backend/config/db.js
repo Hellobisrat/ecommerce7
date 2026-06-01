@@ -2,7 +2,14 @@ import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
+    console.log("🔍 MONGO_URL from environment:", process.env.MONGO_URL);
+
+    if (!process.env.MONGO_URL) {
+      throw new Error("MONGO_URL is missing. Render is not loading the variable.");
+    }
+
+    const conn = await mongoose.connect(process.env.MONGO_URL);
+
     console.log(`📦 MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error("❌ MongoDB connection failed:", error.message);
