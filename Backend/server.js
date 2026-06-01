@@ -18,17 +18,22 @@ const app = express();
 
 
 
-app.use(express.json())
-app.use(morgan("dev"))
+
 app.use(
   cors({
     origin: [
       "http://localhost:3000",
       "https://splendorous-meerkat-7ca579.netlify.app"
     ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
+app.use(express.json())
+app.use(morgan("dev"))
+
 
 // Test route
 app.get("/",(req,res)=>{
