@@ -1,8 +1,10 @@
 import axios from "axios";
 
+
 export const API = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://ecommerce7-1.onrender.com/api"
 });
+
 
 // Prevent infinite redirect loop
 let isRedirecting = false;
