@@ -4,7 +4,7 @@ import { Home, LogIn, LogOut, ShoppingCart } from "lucide-react";
 import { CartContext } from "../../context/CartContext";
 import { useAuth } from "../../hooks/useAuth";
 import { motion } from "framer-motion";
-import CartDrawer from "../cart/CartDrawer";
+import CartDrawer from "../cart/cartDrawer";
 import { AnimatePresence } from "framer-motion";
 
 

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
 
 
-const CartDrawer = ({ onClose }) => {
+const cartDrawer = ({ onClose }) => {
   const navigate = useNavigate();
   const { cart, increaseQty, decreaseQty, removeFromCart ,clearCart} =
     useContext(CartContext);
@@ -143,4 +143,4 @@ console.log("qty:", cart[0]?.quantity, "price:", cart[0]?.product?.price);
   );
 };
 
-export default CartDrawer;
+export default cartDrawer;

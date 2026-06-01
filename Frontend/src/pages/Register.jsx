@@ -32,7 +32,7 @@ const Register = () => {
     await register(formData); // this already sets localStorage + user
 
     toast.success("Account created successfully");
-    navigate("/home");
+    navigate("/");
   } catch (err) {
     const msg = err.response?.data?.message || "Registration failed";
     setError(msg);

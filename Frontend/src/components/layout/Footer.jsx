@@ -1,5 +1,7 @@
 import React from "react";
-import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react";
+import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+import { Mail, Phone, MapPin } from "lucide-react";
+
 
 const Footer = () => {
   return (
@@ -16,15 +18,15 @@ const Footer = () => {
           {/* Social Icons */}
         <div className="flex gap-4 mt-4">
   <button className="hover:text-white transition">
-    <Facebook />
+    <FaFacebook/>
   </button>
 
   <button className="hover:text-white transition">
-    <Instagram />
+    <FaInstagram />
   </button>
 
   <button className="hover:text-white transition">
-    <Twitter />
+    <FaTwitter />
   </button>
 </div>
 

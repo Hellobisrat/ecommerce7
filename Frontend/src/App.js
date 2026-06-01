@@ -15,7 +15,7 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/order/OrderSucess";
-import OrdersPage from "./pages/order/OrdersPage";
+import OrdersPage from "./pages/order/OrderPage"
 
 // Correct lazy import
 const ProductDetail = React.lazy(() => import("./pages/ProductDetails"));

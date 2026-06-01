@@ -9,22 +9,20 @@ const ProductDetail = () => {
   const { id } = useParams();
   const { getProductById } = useContext(ProductContext);
   const { addToCart } = useContext(CartContext);
- 
 
   const [product, setProduct] = useState(null);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-   useEffect(() => {
-  const fetchProduct = async () => {
-    const product = await getProductById(id);
-    setProduct(product);
-  };
+  
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const product = await getProductById(id);
+      setProduct(product);
+    };
 
-  fetchProduct();
-}, [id,getProductById]);
+    fetchProduct();
+  }, [id, getProductById]);
 
-
-  if (!product) return <LoadingSpinner/>
+  if (!product) return <LoadingSpinner />;
 
   return (
     <motion.div
@@ -38,8 +36,8 @@ const ProductDetail = () => {
         className="bg-white/60 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-purple-200/40   flex justify-center"
       >
         <motion.img
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           src={product.image}
           alt={product.title}
           className="w-80 h-80 object-contain "
@@ -64,7 +62,7 @@ const ProductDetail = () => {
         </p>
 
         <button
-          onClick={() => addToCart(product,1)}
+          onClick={() => addToCart(product, 1)}
           className="bg-purple-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md shadow-purple-300 hover:bg-purple-700 transition"
         >
           Add to Cart

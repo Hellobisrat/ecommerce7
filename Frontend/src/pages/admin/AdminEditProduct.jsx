@@ -4,15 +4,12 @@ import { useProducts } from "../../hooks/useProducts";
 import { toast } from "sonner";
 
 const AdminEditProduct = () => {
-
   const { id } = useParams();
   const navigate = useNavigate();
-  const {updateProduct,getProductById} = useProducts()
+  const { updateProduct, getProductById } = useProducts();
   const [updating, setUpdating] = useState(false);
 
-
-
-  const token=localStorage.getItem('token')
+  const token = localStorage.getItem("token");
 
   const [form, setForm] = useState({
     title: "",
@@ -23,34 +20,34 @@ const AdminEditProduct = () => {
 
   useEffect(() => {
     const fetchProduct = async () => {
-     const product = await getProductById(id);
-     setForm(product);
+      const product = await getProductById(id);
+      setForm(product);
     };
     fetchProduct();
-  }, [id,getProductById]);
+  }, [id, getProductById]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setUpdating(true);
+    e.preventDefault();
+    setUpdating(true);
 
-  try {
-    await updateProduct(id, form, token);
-    toast.success("Product updated successfully");
-    navigate("/admin/products");
-  } catch (err) {
-    toast.error("Failed to update product");
-  } finally {
-    setUpdating(false);
-  }
-};
+    try {
+      await updateProduct(id, form, token);
+      toast.success("Product updated successfully");
+      navigate("/admin/products");
+    } catch (err) {
+      toast.error("Failed to update product");
+    } finally {
+      setUpdating(false);
+    }
+  };
 
   if (!form.title) {
-  return <div className="text-center mt-10">Loading product...</div>;
-}
+    return <div className="text-center mt-10">Loading product...</div>;
+  }
 
   return (
     <div className="p-6 w-[500px] md:w-[750px] mx-auto">
@@ -90,14 +87,13 @@ const AdminEditProduct = () => {
         />
 
         <button
-        disabled={updating}
-        className={`w-full py-2 rounded text-white ${
-          updating ? "bg-gray-400" : "bg-blue-600"
-        }`}
-      >
-        {updating ? "Saving..." : "Save Changes"}
-      </button>
-
+          disabled={updating}
+          className={`w-full py-2 rounded text-white ${
+            updating ? "bg-gray-400" : "bg-blue-600"
+          }`}
+        >
+          {updating ? "Saving..." : "Save Changes"}
+        </button>
       </form>
     </div>
   );

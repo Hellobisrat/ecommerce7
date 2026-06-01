@@ -1,13 +1,13 @@
-import React, {  useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-import { useProducts } from "../hooks/useProducts";
-import LoadingSpinner from "../components/ui/LoadingSpinner";
-import ProductCard from "../components/product/ProductCard";
-import Sidebar from "../components/layout/Sidebar";
+import { useProducts } from "../hooks/useProducts.js"
+import LoadingSpinner from "../components/ui/LoadingSpinner.jsx"
+import ProductCard from "../components/product/ProductCard.jsx"
+import Sidebar from "../components/layout/SideBar.jsx";
 import SearchBar from "../components/layout/SearchBar";
 
 const Home = () => {
-  const { products, loading } = useProducts()
+  const { products, loading } = useProducts();
 
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
