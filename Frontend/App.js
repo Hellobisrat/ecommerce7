@@ -30,7 +30,6 @@ function App() {
         <Suspense
           fallback={<div className="text-center mt-10">Loading...</div>}
         >
-       
           <Routes>
             <Route path="/login" element={<Login />} />
 
@@ -57,36 +56,33 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/orders" element={<OrdersPage />} />
 
-<Route
-  path="/admin/products"
-  element={
-    <AdminRoute>
-      <AdminProductList />
-    </AdminRoute>
-  }
-/>
+            <Route
+              path="/admin/products"
+              element={
+                <AdminRoute>
+                  <AdminProductList />
+                </AdminRoute>
+              }
+            />
 
-<Route
-  path="/admin/products/:id/edit"
-  element={
-    <AdminRoute>
-      <AdminEditProduct />
-    </AdminRoute>
-  }
-/>
+            <Route
+              path="/admin/products/:id/edit"
+              element={
+                <AdminRoute>
+                  <AdminEditProduct />
+                </AdminRoute>
+              }
+            />
 
-<Route
-  path="/admin/add-product"
-  element={
-    <AdminRoute>
-      <AdminAddProduct />
-    </AdminRoute>
-  }
-/>
-
-
+            <Route
+              path="/admin/add-product"
+              element={
+                <AdminRoute>
+                  <AdminAddProduct />
+                </AdminRoute>
+              }
+            />
           </Routes>
-  
         </Suspense>
       </div>
 
