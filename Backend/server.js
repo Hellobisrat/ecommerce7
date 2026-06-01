@@ -18,10 +18,14 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://dreamy-brigadeiros-4e5119.netlify.app"],
+    origin: [
+      "http://localhost:3000",
+      "https://splendorous-meerkat-7ca579.netlify.app"
+    ],
     credentials: true,
   })
 );
+
 app.use(express.json())
 app.use(morgan("dev"))
 
