@@ -6,24 +6,28 @@ import { toast } from "sonner";
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const { user } = useContext(AuthContext);
+  const { user, authLoading } = useContext(AuthContext);
   const [cart, setCart] = useState([]);
 
-  // Load cart
+  // Load cart only after authLoading finishes
   const loadCart = useCallback(async () => {
+    if (authLoading) return;
+
+    // Guest cart
     if (!user) {
       const guest = JSON.parse(localStorage.getItem("guestCart")) || [];
       setCart(guest);
       return;
     }
 
+    // User cart
     try {
       const { data } = await cartService.get();
       setCart(data.items || []);
     } catch {
       toast.error("Failed to load cart");
     }
-  }, [user]);
+  }, [user, authLoading]);
 
   useEffect(() => {
     loadCart();
@@ -36,7 +40,7 @@ export const CartProvider = ({ children }) => {
       const existing = guest.find((i) => i.productId === product._id);
 
       if (existing) existing.qty += quantity;
-      else guest.push({ productId: product._id, qty: quantity, product });
+      else guest.push({ productId: product._id, qty: quantity });
 
       localStorage.setItem("guestCart", JSON.stringify(guest));
       setCart(guest);
@@ -108,20 +112,6 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  // Merge guest cart after login
-  const mergeGuestCart = async () => {
-    const guest = JSON.parse(localStorage.getItem("guestCart")) || [];
-    if (guest.length === 0) return;
-
-    try {
-      const { data } = await cartService.merge(guest);
-      localStorage.removeItem("guestCart");
-      setCart(data.items);
-    } catch {
-      toast.error("Failed to merge cart");
-    }
-  };
-
   return (
     <CartContext.Provider
       value={{
@@ -130,7 +120,6 @@ export const CartProvider = ({ children }) => {
         updateQty,
         removeFromCart,
         clearCart,
-        mergeGuestCart,
       }}
     >
       {children}

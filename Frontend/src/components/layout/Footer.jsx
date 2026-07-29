@@ -1,7 +1,7 @@
 import React from "react";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 import { Mail, Phone, MapPin } from "lucide-react";
-
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -16,30 +16,41 @@ const Footer = () => {
           </p>
 
           {/* Social Icons */}
-        <div className="flex gap-4 mt-4">
-  <button className="hover:text-white transition">
-    <FaFacebook/>
-  </button>
+          <div className="flex gap-4 mt-4">
+            <a
+              href="#"
+              className="hover:text-white transition"
+              aria-label="Facebook"
+            >
+              <FaFacebook />
+            </a>
 
-  <button className="hover:text-white transition">
-    <FaInstagram />
-  </button>
+            <a
+              href="#"
+              className="hover:text-white transition"
+              aria-label="Instagram"
+            >
+              <FaInstagram />
+            </a>
 
-  <button className="hover:text-white transition">
-    <FaTwitter />
-  </button>
-</div>
-
+            <a
+              href="#"
+              className="hover:text-white transition"
+              aria-label="Twitter"
+            >
+              <FaTwitter />
+            </a>
+          </div>
         </div>
 
         {/* Quick Links */}
         <div>
           <h3 className="text-lg font-semibold text-white mb-3">Quick Links</h3>
           <ul className="space-y-2">
-            <li className="hover:text-white transition cursor-pointer">Home</li>
-            <li className="hover:text-white transition cursor-pointer">Products</li>
-            <li className="hover:text-white transition cursor-pointer">About Us</li>
-            <li className="hover:text-white transition cursor-pointer">Contact</li>
+            <li><Link to="/" className="hover:text-white transition">Home</Link></li>
+            <li><Link to="/products" className="hover:text-white transition">Products</Link></li>
+            <li><Link to="/about" className="hover:text-white transition">About Us</Link></li>
+            <li><Link to="/contact" className="hover:text-white transition">Contact</Link></li>
           </ul>
         </div>
 

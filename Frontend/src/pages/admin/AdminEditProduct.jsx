@@ -9,19 +9,28 @@ const AdminEditProduct = () => {
   const { updateProduct, getProductById } = useProducts();
   const [updating, setUpdating] = useState(false);
 
-  const token = localStorage.getItem("token");
-
   const [form, setForm] = useState({
     title: "",
     price: "",
     description: "",
     image: "",
+    category: "",
+    stock: "",
   });
 
   useEffect(() => {
     const fetchProduct = async () => {
       const product = await getProductById(id);
-      setForm(product);
+      if (product) {
+        setForm({
+          title: product.title,
+          price: product.price,
+          description: product.description,
+          image: product.image,
+          category: product.category,
+          stock: product.stock,
+        });
+      }
     };
     fetchProduct();
   }, [id, getProductById]);
@@ -35,7 +44,12 @@ const AdminEditProduct = () => {
     setUpdating(true);
 
     try {
-      await updateProduct(id, form, token);
+      await updateProduct(id, {
+        ...form,
+        price: Number(form.price),
+        stock: Number(form.stock),
+      });
+
       toast.success("Product updated successfully");
       navigate("/admin/products");
     } catch (err) {
@@ -56,7 +70,7 @@ const AdminEditProduct = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           name="title"
-          value={form.title || ""}
+          value={form.title}
           onChange={handleChange}
           className="w-full p-2 border rounded"
           placeholder="Product Name"
@@ -64,15 +78,16 @@ const AdminEditProduct = () => {
 
         <input
           name="price"
-          value={form.price || ""}
+          value={form.price}
           onChange={handleChange}
           className="w-full p-2 border rounded"
           placeholder="Price"
+          type="number"
         />
 
         <textarea
           name="description"
-          value={form.description || ""}
+          value={form.description}
           onChange={handleChange}
           className="w-full p-2 border rounded"
           placeholder="Description"
@@ -80,10 +95,27 @@ const AdminEditProduct = () => {
 
         <input
           name="image"
-          value={form.image || ""}
+          value={form.image}
           onChange={handleChange}
           className="w-full p-2 border rounded"
           placeholder="Image URL"
+        />
+
+        <input
+          name="category"
+          value={form.category}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+          placeholder="Category"
+        />
+
+        <input
+          name="stock"
+          value={form.stock}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+          placeholder="Stock"
+          type="number"
         />
 
         <button

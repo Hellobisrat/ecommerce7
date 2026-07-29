@@ -1,37 +1,57 @@
+import { motion } from "framer-motion";
+
 const CheckoutProgress = ({ step }) => {
   const steps = ["Cart", "Checkout", "Success"];
 
   return (
-    <div className="flex items-center justify-center gap-4 my-6">
+    <motion.div
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="flex items-center justify-center gap-6 my-6"
+    >
       {steps.map((label, index) => {
         const active = index <= step;
 
         return (
-          <div key={label} className="flex items-center gap-2">
-            <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold
-                ${active ? "bg-purple-600 text-white" : "bg-gray-200 text-gray-500"}
-              `}
+          <div key={label} className="flex items-center gap-3">
+            {/* Step Circle */}
+            <motion.div
+              animate={{
+                backgroundColor: active ? "#7c3aed" : "#e5e7eb",
+                color: active ? "#fff" : "#6b7280",
+              }}
+              transition={{ duration: 0.3 }}
+              className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold shadow-md"
             >
               {index + 1}
-            </div>
+            </motion.div>
 
-            <span className={`text-sm ${active ? "font-semibold" : "text-gray-500"}`}>
+            {/* Step Label */}
+            <span
+              className={`text-sm ${
+                active ? "font-semibold text-purple-700" : "text-gray-500"
+              }`}
+            >
               {label}
             </span>
 
+            {/* Connector */}
             {index < steps.length - 1 && (
-              <div
-                className={`w-10 h-1 rounded-full ${
-                  index < step ? "bg-purple-600" : "bg-gray-300"
-                }`}
+              <motion.div
+                animate={{
+                  backgroundColor: index < step ? "#7c3aed" : "#d1d5db",
+                }}
+                transition={{ duration: 0.3 }}
+                className="w-14 h-1 rounded-full"
               />
             )}
           </div>
         );
       })}
-    </div>
+    </motion.div>
   );
 };
 
 export default CheckoutProgress;
+

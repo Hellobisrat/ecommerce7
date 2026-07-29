@@ -1,9 +1,32 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { CheckCircle } from "lucide-react";
 import CheckoutProgress from "../../components/ui/CheckoutProgress";
+import { API } from "../../api/axios";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
 
 const OrderSuccess = () => {
   const navigate = useNavigate();
+  const { orderId } = useParams();   // FIXED
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        const { data } = await API.get(`/orders/${orderId}`);
+        setOrder(data);
+      } catch (err) {
+        console.error("Failed to load order:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrder();
+  }, [orderId]);
+
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center p-6 text-black">
@@ -22,14 +45,18 @@ const OrderSuccess = () => {
           being processed.
         </p>
 
-        {/* Order Info (placeholder for now) */}
+        {/* Real Order Info */}
         <div className="bg-gray-100 rounded-xl p-4 text-left mb-6">
           <p className="text-sm text-slate-700">
-            <span className="font-semibold">Order Number:</span> #ORD-
-            {Math.floor(Math.random() * 90000) + 10000}
+            <span className="font-semibold">Order Number:</span> {order._id}
           </p>
+
           <p className="text-sm text-slate-700 mt-1">
-            <span className="font-semibold">Status:</span> Processing
+            <span className="font-semibold">Status:</span> {order.status}
+          </p>
+
+          <p className="text-sm text-slate-700 mt-1">
+            <span className="font-semibold">Total:</span> ${order.total}
           </p>
         </div>
 
@@ -55,3 +82,4 @@ const OrderSuccess = () => {
 };
 
 export default OrderSuccess;
+

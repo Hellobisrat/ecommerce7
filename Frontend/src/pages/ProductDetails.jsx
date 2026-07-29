@@ -12,11 +12,10 @@ const ProductDetail = () => {
 
   const [product, setProduct] = useState(null);
 
-  
   useEffect(() => {
     const fetchProduct = async () => {
-      const product = await getProductById(id);
-      setProduct(product);
+      const data = await getProductById(id);
+      setProduct(data);
     };
 
     fetchProduct();
@@ -33,14 +32,14 @@ const ProductDetail = () => {
       {/* Left: Product Image */}
       <motion.div
         whileHover={{ scale: 1.05 }}
-        className="bg-white/60 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-purple-200/40   flex justify-center"
+        className="bg-white/60 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-purple-200/40 flex justify-center"
       >
         <motion.img
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           src={product.image}
           alt={product.title}
-          className="w-80 h-80 object-contain "
+          className="w-80 h-80 object-contain"
         />
       </motion.div>
 

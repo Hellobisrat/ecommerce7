@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from "react";
-
-import { useProducts } from "../hooks/useProducts.js"
-import LoadingSpinner from "../components/ui/LoadingSpinner.jsx"
-import ProductCard from "../components/product/ProductCard.jsx"
+import { useProducts } from "../hooks/useProducts.js";
+import LoadingSpinner from "../components/ui/LoadingSpinner.jsx";
+import ProductCard from "../components/product/ProductCard.jsx";
 import Sidebar from "../components/layout/SideBar.jsx";
 import SearchBar from "../components/layout/SearchBar";
 
 const Home = () => {
-  const { products, loading } = useProducts();
+  const { products, loadingProducts } = useProducts();
 
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  console.log("BACKEND PRODUCTS:", products);
-
   const itemsPerPage = 8;
 
-  const categories = [...new Set(products.map((p) => p.category))];
+  const categories = ["all", ...new Set(products.map((p) => p.category))];
 
   // Filter by category + search
   const filteredProducts = products.filter((product) => {
@@ -37,23 +34,23 @@ const Home = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProducts = filteredProducts.slice(
     indexOfFirstItem,
-    indexOfLastItem,
+    indexOfLastItem
   );
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
-        setSidebarOpen(true); // always open on desktop
+        setSidebarOpen(true);
       }
     };
 
-    handleResize(); // run on mount
+    handleResize();
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  if (loading) return <LoadingSpinner />;
+  if (loadingProducts) return <LoadingSpinner />;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] min-h-screen gap-6 p-4 mt-6">
@@ -73,7 +70,7 @@ const Home = () => {
       <div>
         <SearchBar onSearch={(value) => setQuery(value)} />
 
-        <ProductCard filteredProducts={currentProducts} />
+        <ProductCard products={currentProducts} />
 
         {/* Pagination */}
         <div className="flex justify-center mt-10 gap-3">

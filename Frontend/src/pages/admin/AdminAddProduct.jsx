@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { API } from "../../api/axios.js";
-
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
@@ -17,9 +16,6 @@ const AdminAddProduct = () => {
   const CLOUD_NAME = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
   const UPLOAD_PRESET = process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET;
 
-  console.log(UPLOAD_PRESET);
-  console.log(CLOUD_NAME);
-
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImageFile(file);
@@ -27,7 +23,6 @@ const AdminAddProduct = () => {
   };
 
   const uploadToCloudinary = async () => {
-    console.log("Uploading to Cloudinary...", CLOUD_NAME, UPLOAD_PRESET);
     const formData = new FormData();
     formData.append("file", imageFile);
     formData.append("upload_preset", UPLOAD_PRESET);
@@ -37,11 +32,15 @@ const AdminAddProduct = () => {
       {
         method: "POST",
         body: formData,
-      },
+      }
     );
 
     const data = await res.json();
-    console.log("Cloudinary response:", data);
+
+    if (!data.secure_url) {
+      throw new Error("Image upload failed");
+    }
+
     return data.secure_url;
   };
 
@@ -50,16 +49,18 @@ const AdminAddProduct = () => {
 
     try {
       const imageUrl = await uploadToCloudinary();
-      const token = localStorage.getItem("token");
 
-      await API.post(
-        "/products",
-        { title, description, price, category, stock, image: imageUrl },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+      await API.post("/products", {
+        title,
+        description,
+        price: Number(price),
+        category,
+        stock: Number(stock),
+        image: imageUrl,
+      });
 
       toast.success("Product created successfully");
-      navigate("/"); // ✅ correct place
+      navigate("/");
     } catch (error) {
       console.log("ERROR:", error.response?.data || error.message);
       toast.error("Failed to create product");
@@ -119,7 +120,7 @@ const AdminAddProduct = () => {
         {imagePreview && (
           <img
             src={imagePreview}
-            alt="loaded "
+            alt="loaded"
             className="w-40 h-40 object-cover rounded"
           />
         )}

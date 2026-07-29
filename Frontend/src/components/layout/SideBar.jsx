@@ -4,7 +4,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 
 const Sidebar = ({ isOpen, toggleSidebar, categories, activeCategory, onSelect }) => {
   return (
-    <div className="md:w-64 ">
+    <div className="md:w-64">
       {/* Toggle Button (Mobile Only) */}
       <button
         onClick={toggleSidebar}
@@ -20,10 +20,11 @@ const Sidebar = ({ isOpen, toggleSidebar, categories, activeCategory, onSelect }
         transition={{ duration: 0.3 }}
         className="overflow-hidden md:overflow-visible"
       >
-        <div className="bg-white/6 backdrop:blur-xl space-y-6 p-5 rounded-xl shadow-lg border border-purple-200/40 h-screen">
+        <div className="bg-white/60 backdrop-blur-xl space-y-6 p-5 rounded-xl shadow-lg border border-purple-200/40 h-screen">
           <h2 className="text-xl font-bold text-purple-700 mb-4">Categories</h2>
 
           <ul className="space-y-8">
+            {/* All Products */}
             <li
               onClick={() => onSelect("all")}
               className={`cursor-pointer px-3 py-2 rounded-lg transition ${
@@ -34,20 +35,23 @@ const Sidebar = ({ isOpen, toggleSidebar, categories, activeCategory, onSelect }
             >
               All Products
             </li>
-            {categories.map((cat) => (
-              <li
-                key={cat}
-                onClick={() => onSelect(cat)}
-                className={`cursor-pointer px-3 py-2 rounded-lg transition ${
-                  activeCategory === cat
-                    ? "bg-purple-600 text-white"
-                    : "hover:bg-purple-200 text-purple-700"
-                }`}
-              >
-                {cat}
-              </li>
-            ))}
-            
+
+            {/* Dynamic Categories */}
+            {categories
+              .filter((cat) => cat !== "all")
+              .map((cat) => (
+                <li
+                  key={cat}
+                  onClick={() => onSelect(cat)}
+                  className={`cursor-pointer px-3 py-2 rounded-lg transition ${
+                    activeCategory === cat
+                      ? "bg-purple-600 text-white"
+                      : "hover:bg-purple-200 text-purple-700"
+                  }`}
+                >
+                  {cat}
+                </li>
+              ))}
           </ul>
         </div>
       </motion.div>

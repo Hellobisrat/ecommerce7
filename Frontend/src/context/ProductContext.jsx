@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useCallback } from "react";
-import { ProductService } from "../services/productService.js"
+import { ProductService } from "../services/productService.js";
 import { toast } from "sonner";
 
 export const ProductContext = createContext();
@@ -36,10 +36,10 @@ export const ProductProvider = ({ children }) => {
     }
   };
 
-  // Create product
-  const createProduct = async (productData, token) => {
+  // Create product (token removed — axios handles it)
+  const createProduct = async (productData) => {
     try {
-      const { data } = await ProductService.create(productData, token);
+      const { data } = await ProductService.create(productData);
       setProducts((prev) => [...prev, data]);
       toast.success("Product created");
       return data;
@@ -49,23 +49,28 @@ export const ProductProvider = ({ children }) => {
   };
 
   // Update product
-  const updateProduct = async (id, productData, token) => {
+  const updateProduct = async (id, productData) => {
     try {
-      const { data } = await ProductService.update(id, productData, token);
+      const { data } = await ProductService.update(id, productData);
+
+      // Ensure correct shape
+      const updatedProduct = data.product || data;
+
       setProducts((prev) =>
-        prev.map((p) => (p._id === id ? data : p))
+        prev.map((p) => (p._id === id ? updatedProduct : p))
       );
+
       toast.success("Product updated");
-      return data;
+      return updatedProduct;
     } catch {
       toast.error("Failed to update product");
     }
   };
 
   // Delete product
-  const deleteProduct = async (id, token) => {
+  const deleteProduct = async (id) => {
     try {
-      await ProductService.remove(id, token);
+      await ProductService.remove(id);
       setProducts((prev) => prev.filter((p) => p._id !== id));
       toast.success("Product deleted");
     } catch {
@@ -89,4 +94,3 @@ export const ProductProvider = ({ children }) => {
     </ProductContext.Provider>
   );
 };
-

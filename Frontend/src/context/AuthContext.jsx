@@ -18,9 +18,10 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const { data } = await authService.getProfile(token);
-      setUser(data);
+      setUser(data); // backend returns user WITHOUT token
     } catch {
       localStorage.removeItem("token");
+      setUser(null);
     } finally {
       setAuthLoading(false);
     }
@@ -31,28 +32,31 @@ export const AuthProvider = ({ children }) => {
   }, [loadUser]);
 
   // Login
-const login = async (credentials) => {
-  try {
-    const response = await authService.login(credentials);
-    const { data } = response;
+  const login = async (credentials) => {
+    const { data } = await authService.login(credentials);
+
+    // Save token
     localStorage.setItem("token", data.token);
-    setUser(data);
-    return data;
-  } catch (err) {
-    return null;
-  }
-};
+
+    // Save user (remove token from user object)
+    const { token, ...userData } = data;
+    setUser(userData);
+
+    return userData;
+  };
 
   // Register
   const register = async (info) => {
-    try {
-      const { data } = await authService.register(info);
-      toast.success("Account created");
-      return data;
-    } catch {
-      toast.error("Registration failed");
-      return null;
-    }
+    const { data } = await authService.register(info);
+
+    // Save token
+    localStorage.setItem("token", data.token);
+
+    // Save user
+    const { token, ...userData } = data;
+    setUser(userData);
+
+    return userData;
   };
 
   // Logout

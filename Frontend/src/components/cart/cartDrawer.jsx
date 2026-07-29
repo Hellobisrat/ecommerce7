@@ -4,29 +4,15 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
 
-
-const cartDrawer = ({ onClose }) => {
+const CartDrawer = ({ onClose }) => {
   const navigate = useNavigate();
-  const { cart, increaseQty, decreaseQty, removeFromCart ,clearCart} =
-    useContext(CartContext);
+  const { cart, updateQty, removeFromCart, clearCart } = useContext(CartContext);
 
- const total = cart.reduce((sum, item) => {
-  const qty = Number(item.quantity) || 0;
-  const price = item.product && typeof item.product.price === "number"
-    ? item.product.price
-    : 0;
-
-  return sum + qty * price;
-}, 0);
-
-
-  console.log ("cart inside cartDrawer",cart)
-  console.log(cart);
-console.log("First item:", cart[0]);
-console.log("qty:", cart[0]?.quantity, "price:", cart[0]?.product?.price);
-
-  
-
+  const total = cart.reduce((sum, item) => {
+    const qty = Number(item.qty) || 0;
+    const price = Number(item.price) || 0;
+    return sum + qty * price;
+  }, 0);
 
   return (
     <>
@@ -55,7 +41,7 @@ console.log("qty:", cart[0]?.quantity, "price:", cart[0]?.product?.price);
           </button>
         </div>
 
-        {/* Scrollable Items */}
+        {/* Items */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {cart.length === 0 ? (
             <p className="text-slate-600 text-center mt-10">
@@ -64,28 +50,28 @@ console.log("qty:", cart[0]?.quantity, "price:", cart[0]?.product?.price);
           ) : (
             cart.map((item) => (
               <div
-                key={item._id}
+                key={item.productId}
                 className="flex items-center justify-between gap-3 border p-3 rounded-lg"
               >
                 {/* Product Info */}
                 <div className="flex-1">
                   <p className="font-semibold text-slate-800 line-clamp-2">
-                    {item.product.title} 
+                    {item.title}
                   </p>
 
                   <p className="text-sm text-slate-600">
-                    ${item.product.price} × {item.quantity}
+                    ${item.price} × {item.qty}
                   </p>
 
                   <p className="font-bold text-purple-700">
-                    ${(item.product.price * item.quantity).toFixed(2)}
+                    ${(item.price * item.qty).toFixed(2)}
                   </p>
                 </div>
 
                 {/* Quantity Controls */}
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => decreaseQty(item.product._id)}
+                    onClick={() => updateQty(item.productId, item.qty - 1)}
                     className="px-2 py-1 bg-gray-200 rounded"
                   >
                     –
@@ -94,7 +80,7 @@ console.log("qty:", cart[0]?.quantity, "price:", cart[0]?.product?.price);
                   <span className="font-semibold">{item.qty}</span>
 
                   <button
-                    onClick={() => increaseQty(item.product._id)}
+                    onClick={() => updateQty(item.productId, item.qty + 1)}
                     className="px-2 py-1 bg-gray-200 rounded"
                   >
                     +
@@ -103,7 +89,7 @@ console.log("qty:", cart[0]?.quantity, "price:", cart[0]?.product?.price);
 
                 {/* Remove */}
                 <button
-                  onClick={() => removeFromCart(item._id)}
+                  onClick={() => removeFromCart(item.productId)}
                   className="bg-red-500 text-white px-3 py-1 rounded"
                 >
                   Remove
@@ -111,12 +97,15 @@ console.log("qty:", cart[0]?.quantity, "price:", cart[0]?.product?.price);
               </div>
             ))
           )}
-          <button
-                  onClick={() => clearCart()}
-                  className="bg-red-500 text-white px-3 py-2 w-full rounded"
-                >
-                  Clear cart
-                </button>
+
+          {cart.length > 0 && (
+            <button
+              onClick={clearCart}
+              className="bg-red-500 text-white px-3 py-2 w-full rounded"
+            >
+              Clear cart
+            </button>
+          )}
         </div>
 
         {/* Footer */}
@@ -143,4 +132,4 @@ console.log("qty:", cart[0]?.quantity, "price:", cart[0]?.product?.price);
   );
 };
 
-export default cartDrawer;
+export default CartDrawer;

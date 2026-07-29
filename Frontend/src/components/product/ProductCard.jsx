@@ -4,12 +4,14 @@ import { useCart } from "../../hooks/useCart";
 import { Heart } from "lucide-react";
 import { motion } from "framer-motion";
 
-const ProductCard = ({ filteredProducts }) => {
+const ProductCard = ({ products }) => {
   const { addToCart } = useCart();
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-      {filteredProducts.map((product) => {
+      {products.map((product) => {
+        const cleanUrl = product.image.replace(/^https?:\/\//, "");
+
         return (
           <motion.div
             key={product._id}
@@ -39,8 +41,9 @@ const ProductCard = ({ filteredProducts }) => {
               <p className="font-semibold text-slate-900 text-center line-clamp-2 h-[50px]">
                 {product.title}
               </p>
+
               <img
-                src={`https://images.weserv.nl/?url=${product.image.replace("https://", "")}`}
+                src={`https://images.weserv.nl/?url=${cleanUrl}`}
                 alt={product.title}
                 className="w-full h-48 object-cover rounded-lg mt-3"
               />
@@ -50,7 +53,7 @@ const ProductCard = ({ filteredProducts }) => {
               <p className="text-sm text-slate-600">Price: ${product.price}</p>
 
               <motion.button
-                onClick={() => addToCart(product)}
+                onClick={() => addToCart(product, 1)}
                 whileTap={{ scale: 0.95 }}
                 className="bg-purple-600 text-white font-semibold
                   px-2 py-2 rounded-lg

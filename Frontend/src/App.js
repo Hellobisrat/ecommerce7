@@ -1,5 +1,6 @@
 import React, { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
+
 import AdminAddProduct from "./pages/admin/AdminAddProduct";
 import AdminRoute from "./routes/AdminRoute";
 import AdminProductList from "./pages/admin/AdminProductList";
@@ -15,9 +16,11 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/order/OrderSucess";
-import OrdersPage from "./pages/order/OrderPage"
+import OrdersPage from "./pages/order/OrderPage";
+import OrderDetail from "./pages/order/OrderDetail";
+import LoadingSpinner from "./components/ui/LoadingSpinner";
 
-// Correct lazy import
+// Lazy import
 const ProductDetail = React.lazy(() => import("./pages/ProductDetails"));
 
 function App() {
@@ -27,11 +30,10 @@ function App() {
       <Navbar />
 
       <div className="flex-grow">
-        <Suspense
-          fallback={<div className="text-center mt-10">Loading...</div>}
-        >
+        <Suspense fallback={<LoadingSpinner />}>
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
             <Route
               path="/"
@@ -51,11 +53,34 @@ function App() {
               }
             />
 
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/order-success" element={<OrderSuccess />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/orders" element={<OrdersPage />} />
+            <Route
+              path="/checkout"
+              element={
+                <ProtectedRoute>
+                  <Checkout />
+                </ProtectedRoute>
+              }
+            />
 
+            <Route
+              path="/order-success/:orderId"
+              element={
+                <ProtectedRoute>
+                  <OrderSuccess />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoute>
+                  <OrdersPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Admin Routes */}
             <Route
               path="/admin/products"
               element={
@@ -82,6 +107,15 @@ function App() {
                 </AdminRoute>
               }
             />
+            <Route
+              path="/orders/:orderId"
+              element={
+                <ProtectedRoute>
+                  <OrderDetail />
+                </ProtectedRoute>
+                }
+            />
+
           </Routes>
         </Suspense>
       </div>

@@ -17,38 +17,28 @@ const Login = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError(""); // clear error when typing
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!formData.email || !formData.password) {
-    setError("Email and password are required");
-    return;
-  }
+    if (!formData.email || !formData.password) {
+      setError("Email and password are required");
+      return;
+    }
 
- const user = await login(formData);
+    try {
+      const user = await login(formData); // AuthContext handles token + user
 
-console.log("Returned user from login():", user);
-console.log("AuthContext user BEFORE navigate:", user);
-console.log("AuthContext user AFTER login():", user);
-
-
-  if (!user) {
-    setError("Invalid email or password");
-    return;
-  }
-
-  setError("");
-  toast.success("Logged in successfully");
-
-  setTimeout(() => {
-    navigate("/", { replace: true });
-  }, 50);
-};
-
-
-
+      toast.success("Logged in successfully");
+      navigate("/", { replace: true });
+    } catch (err) {
+      const msg = err.response?.data?.message || "Invalid email or password";
+      setError(msg);
+      toast.error(msg);
+    }
+  };
 
   return (
     <div className="grid grid-cols-3 gap-10 sm:m-6 md:m-12 lg:m-24 min-h-screen">
@@ -107,20 +97,17 @@ console.log("AuthContext user AFTER login():", user);
               LOGIN
             </button>
           </div>
-          <p className="text-sm text-red-400 text-center mt-4">
-              Don’t have an account?{" "}
-            <a href="/register" className="text-blue-500 font-semibold">
-               Register
-              </a>
-        </p>
-        </form>
-       
 
+          <p className="text-sm text-red-400 text-center mt-4">
+            Don’t have an account?{" "}
+            <a href="/register" className="text-blue-500 font-semibold">
+              Register
+            </a>
+          </p>
+        </form>
       </div>
-       
     </div>
   );
 };
 
 export default Login;
-
