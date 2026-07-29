@@ -7,22 +7,22 @@ import asyncHandler from "../middleware/asyncHandler.js";
 
 const router = express.Router();
 
-// Register
+// REGISTER
 router.post(
   "/register",
   validateRegister,
   asyncHandler(registerUser)
 );
 
-// Login
+// LOGIN
 router.post(
   "/login",
-  rateLimiter,        // Prevent brute force
+  rateLimiter,        // Prevent brute force attacks
   validateLogin,
   asyncHandler(loginUser)
 );
 
-// Get logged-in user
+// GET LOGGED-IN USER
 router.get(
   "/me",
   protect,

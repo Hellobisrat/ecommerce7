@@ -24,7 +24,7 @@ router.get("/", protect, asyncHandler(getCart));
 router.post(
   "/add",
   protect,
-  rateLimiter,
+  rateLimiter,          // optional but good
   validateAddToCart,
   asyncHandler(addToCart)
 );
@@ -37,14 +37,14 @@ router.put(
   asyncHandler(updateCartItem)
 );
 
-// Remove item
+// Remove item from cart
 router.delete(
   "/remove/:productId",
   protect,
   asyncHandler(removeFromCart)
 );
 
-// Clear cart
+// Clear entire cart
 router.delete(
   "/clear",
   protect,

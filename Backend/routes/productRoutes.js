@@ -17,20 +17,23 @@ import {
 
 const router = express.Router();
 
-// Public routes
+// Public: get all products
 router.get("/", asyncHandler(getProducts));
+
+// Public: get single product
 router.get("/:id", asyncHandler(getProductById));
 
-// Admin routes
+// Admin: create product
 router.post(
   "/",
   protect,
   adminOnly,
-  rateLimiter,
+  rateLimiter,              // optional but good
   validateCreateProduct,
   asyncHandler(createProduct)
 );
 
+// Admin: update product
 router.put(
   "/:id",
   protect,
@@ -39,6 +42,7 @@ router.put(
   asyncHandler(updateProduct)
 );
 
+// Admin: delete product
 router.delete(
   "/:id",
   protect,
@@ -47,6 +51,3 @@ router.delete(
 );
 
 export default router;
-
-
-

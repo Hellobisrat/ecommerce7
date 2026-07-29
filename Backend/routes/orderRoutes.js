@@ -9,9 +9,7 @@ import {
 
 import asyncHandler from "../middleware/asyncHandler.js";
 import rateLimiter from "../middleware/rateLimiter.js";
-import {
-  validateCreateOrder
-} from "../middleware/validationMiddleware.js";
+import { validateCreateOrder } from "../middleware/validationMiddleware.js";
 
 const router = express.Router();
 
@@ -31,13 +29,6 @@ router.get(
   asyncHandler(getMyOrders)
 );
 
-// Get specific order (user must own it OR be admin)
-router.get(
-  "/:id",
-  protect,
-  asyncHandler(getOrderById)
-);
-
 // Admin: get all orders (with pagination)
 router.get(
   "/",
@@ -46,5 +37,13 @@ router.get(
   asyncHandler(getAllOrders)
 );
 
+// Get specific order (user must own it OR be admin)
+router.get(
+  "/:id",
+  protect,
+  asyncHandler(getOrderById)
+);
+
 export default router;
+
 
