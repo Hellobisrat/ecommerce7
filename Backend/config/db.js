@@ -1,19 +1,39 @@
 import mongoose from "mongoose";
 
 const connectDB = async () => {
+  const mongoURL = process.env.MONGO_URL;
+
+  if (!mongoURL) {
+    throw new Error("❌ MONGO_URL is missing. Check your environment variables.");
+  }
+
   try {
-    console.log("🔍 MONGO_URL from environment:", process.env.MONGO_URL);
+    console.log("🔍 Attempting MongoDB connection...");
 
-    if (!process.env.MONGO_URL) {
-      throw new Error("MONGO_URL is missing. Render is not loading the variable.");
-    }
-
-    const conn = await mongoose.connect(process.env.MONGO_URL);
+    const conn = await mongoose.connect(mongoURL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000, // Prevent long hangs
+    });
 
     console.log(`📦 MongoDB Connected: ${conn.connection.host}`);
+
+    // Connection events
+    mongoose.connection.on("connected", () => {
+      console.log("🟢 MongoDB connected");
+    });
+
+    mongoose.connection.on("error", (err) => {
+      console.error("🔴 MongoDB connection error:", err);
+    });
+
+    mongoose.connection.on("disconnected", () => {
+      console.warn("🟡 MongoDB disconnected");
+    });
+
   } catch (error) {
     console.error("❌ MongoDB connection failed:", error.message);
-    process.exit(1);
+    throw error; // Let global error handler catch it
   }
 };
 

@@ -6,17 +6,47 @@ import {
   updateProduct,
   deleteProduct,
 } from "../controllers/productController.js";
+
 import { protect, adminOnly } from "../middleware/authMiddleware.js";
+import asyncHandler from "../middleware/asyncHandler.js";
+import rateLimiter from "../middleware/rateLimiter.js";
+import {
+  validateCreateProduct,
+  validateUpdateProduct
+} from "../middleware/validationMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", getProducts);
-router.get("/:id", getProductById);
+// Public routes
+router.get("/", asyncHandler(getProducts));
+router.get("/:id", asyncHandler(getProductById));
 
-router.post("/", protect, adminOnly, createProduct);
-router.put("/:id", protect, adminOnly, updateProduct);
-router.delete("/:id", protect, adminOnly, deleteProduct);
+// Admin routes
+router.post(
+  "/",
+  protect,
+  adminOnly,
+  rateLimiter,
+  validateCreateProduct,
+  asyncHandler(createProduct)
+);
+
+router.put(
+  "/:id",
+  protect,
+  adminOnly,
+  validateUpdateProduct,
+  asyncHandler(updateProduct)
+);
+
+router.delete(
+  "/:id",
+  protect,
+  adminOnly,
+  asyncHandler(deleteProduct)
+);
 
 export default router;
+
 
 
