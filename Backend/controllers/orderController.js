@@ -1,12 +1,30 @@
 import Order from "../models/Order.js";
+import Product from "../models/Product.js";
 
-// POST /api/orders  (protected)
+// POST /api/orders
 export const createOrder = async (req, res) => {
   try {
-    const { items, shipping, total } = req.body;
+    const { items, shipping } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ message: "No items in order" });
+    }
+
+    // Validate products and calculate total
+    let total = 0;
+
+    for (const item of items) {
+      const product = await Product.findById(item.product);
+
+      if (!product) {
+        return res.status(404).json({ message: `Product not found: ${item.product}` });
+      }
+
+      if (product.stock < item.qty) {
+        return res.status(400).json({ message: `Not enough stock for ${product.title}` });
+      }
+
+      total += product.price * item.qty;
     }
 
     const order = await Order.create({
@@ -23,12 +41,12 @@ export const createOrder = async (req, res) => {
   }
 };
 
-// GET /api/orders/my-orders  (protected)
+// GET /api/orders/my-orders
 export const getMyOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user._id }).sort({
-      createdAt: -1,
-    });
+    const orders = await Order.find({ user: req.user._id })
+      .sort({ createdAt: -1 })
+      .populate("items.product", "title price image");
 
     res.json(orders);
   } catch (error) {
@@ -36,15 +54,15 @@ export const getMyOrders = async (req, res) => {
   }
 };
 
-// GET /api/orders/:id  (protected)
+// GET /api/orders/:id
 export const getOrderById = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.params.id)
+      .populate("items.product", "title price image");
 
     if (!order) return res.status(404).json({ message: "Order not found" });
 
-    // Ensure user owns the order
-    if (order.user.toString() !== req.user._id.toString()) {
+    if (order.user.toString() !== req.user._id.toString() && req.user.role !== "admin") {
       return res.status(403).json({ message: "Not authorized" });
     }
 
@@ -54,20 +72,33 @@ export const getOrderById = async (req, res) => {
   }
 };
 
+// GET /api/orders (admin only)
 export const getAllOrders = async (req, res) => {
   try {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
     const orders = await Order.find()
       .populate("user", "name email")
-      .populate("orderItems.product", "title price image");
+      .populate("items.product", "title price image")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
-    if (orders.length === 0) {
-      return res.status(404).json({ message: "No orders found" });
-    }
+    const total = await Order.countDocuments();
 
-    res.status(200).json(orders);
+    res.json({
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit),
+      orders,
+    });
   } catch (error) {
     console.error("Error fetching orders:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 

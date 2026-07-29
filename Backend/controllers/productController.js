@@ -1,10 +1,33 @@
 import Product from "../models/Product.js";
 
-// GET /api/products
+// GET /api/products?page=1&limit=20&category=shoes&sort=price
 export const getProducts = async (req, res) => {
   try {
-    const products = await Product.find().sort({ createdAt: -1 });
-    res.json(products);
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const filter = {};
+    if (req.query.category) filter.category = req.query.category;
+
+    const sort = {};
+    if (req.query.sort === "price") sort.price = 1;
+    if (req.query.sort === "newest") sort.createdAt = -1;
+
+    const products = await Product.find(filter)
+      .sort(sort)
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Product.countDocuments(filter);
+
+    res.json({
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit),
+      products,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
@@ -23,8 +46,29 @@ export const getProductById = async (req, res) => {
   }
 };
 
-// POST /api/products  (admin only later)
+// POST /api/products (admin only)
+export const createProduct = async (req, res) => {
+  try {
+    const { title, description, price, category, image } = req.body;
 
+    if (!title || !description || !price || !category || !image) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const product = await Product.create({
+      title,
+      description,
+      price,
+      category,
+      image,
+    });
+
+    res.status(201).json(product);
+  } catch (error) {
+    console.error("Error creating product:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 // PUT /api/products/:id
 export const updateProduct = async (req, res) => {
@@ -52,29 +96,6 @@ export const deleteProduct = async (req, res) => {
 
     res.json({ message: "Product deleted" });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-export const createProduct = async (req, res) => {
-  try {
-    const { title, description, price, category, image } = req.body;
-
-    if (!title || !description || !price || !category || !image) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
-    const product = await Product.create({
-      title,
-      description,
-      price,
-      category,
-      image, // this is the Cloudinary URL
-    });
-
-    res.status(201).json(product);
-  } catch (error) {
-    console.error("Error creating product:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
