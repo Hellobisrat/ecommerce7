@@ -8,19 +8,12 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
 
-  // Restore user on refresh
+  // Restore user on refresh using cookies
   const loadUser = useCallback(async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setAuthLoading(false);
-      return;
-    }
-
     try {
-      const { data } = await authService.getProfile(token);
-      setUser(data); // backend returns user WITHOUT token
+      const { data } = await authService.getProfile(); // cookies included
+      setUser(data);
     } catch {
-      localStorage.removeItem("token");
       setUser(null);
     } finally {
       setAuthLoading(false);
@@ -35,33 +28,24 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     const { data } = await authService.login(credentials);
 
-    // Save token
-    localStorage.setItem("token", data.token);
+    // backend sets cookies automatically
+    setUser(data.user);
 
-    // Save user (remove token from user object)
-    const { token, ...userData } = data;
-    setUser(userData);
-
-    return userData;
+    return data.user;
   };
 
   // Register
   const register = async (info) => {
     const { data } = await authService.register(info);
 
-    // Save token
-    localStorage.setItem("token", data.token);
+    setUser(data.user);
 
-    // Save user
-    const { token, ...userData } = data;
-    setUser(userData);
-
-    return userData;
+    return data.user;
   };
 
   // Logout
-  const logout = () => {
-    localStorage.removeItem("token");
+  const logout = async () => {
+    await authService.logout(); // optional backend endpoint
     setUser(null);
     toast.success("Logged out");
   };

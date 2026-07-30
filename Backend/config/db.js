@@ -1,24 +1,22 @@
+import crypto from "crypto";
+global.crypto = crypto; // ⭐ REQUIRED FIX
+
 import mongoose from "mongoose";
 
 const connectDB = async () => {
-  const mongoURL = process.env.MONGO_URL;
+  const mongoURL = process.env.MONGO_URI;
 
   if (!mongoURL) {
-    throw new Error("❌ MONGO_URL is missing. Check your environment variables.");
+    throw new Error("❌ MONGO_URI is missing. Check your environment variables.");
   }
 
   try {
     console.log("🔍 Attempting MongoDB connection...");
 
-    const conn = await mongoose.connect(mongoURL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000, // Prevent long hangs
-    });
+    const conn = await mongoose.connect(mongoURL);
 
     console.log(`📦 MongoDB Connected: ${conn.connection.host}`);
 
-    // Connection events
     mongoose.connection.on("connected", () => {
       console.log("🟢 MongoDB connected");
     });
@@ -33,7 +31,7 @@ const connectDB = async () => {
 
   } catch (error) {
     console.error("❌ MongoDB connection failed:", error.message);
-    throw error; // Let global error handler catch it
+    throw error;
   }
 };
 
