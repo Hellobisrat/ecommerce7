@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-import generateToken from "../utils/generateToken.js";
+import {generateToken} from "../utils/generateToken.js";
 
 // POST /api/auth/register
 export const registerUser = async (req, res) => {

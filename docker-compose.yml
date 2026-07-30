@@ -26,7 +26,7 @@ services:
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: admin123
     ports:
-      - "8081:8081"
+      - "8082:8081"
 
   backend:
     build: ./backend
