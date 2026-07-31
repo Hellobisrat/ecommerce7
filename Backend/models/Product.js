@@ -10,12 +10,6 @@ const productSchema = new mongoose.Schema(
       index: true,
     },
 
-    slug: {
-      type: String,
-      unique: true,
-      index: true,
-    },
-
     description: {
       type: String,
       required: true,
@@ -84,12 +78,6 @@ const productSchema = new mongoose.Schema(
 );
 
 // Auto-generate slug
-productSchema.pre("save", function (next) {
-  if (this.isModified("title")) {
-    this.slug = slugify(this.title, { lower: true });
-  }
-  next();
-});
 
 // Index for sorting by newest
 productSchema.index({ createdAt: -1 });

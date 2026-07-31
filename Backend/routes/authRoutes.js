@@ -1,5 +1,5 @@
 import express from "express";
-import { registerUser, loginUser, getMe } from "../controllers/authController.js";
+import { registerUser, loginUser } from "../controllers/authController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { validateRegister, validateLogin } from "../middleware/validationMiddleware.js";
 import rateLimiter from "../middleware/rateLimiter.js";
@@ -23,10 +23,10 @@ router.post(
 );
 
 // GET LOGGED-IN USER
-router.get(
-  "/me",
-  protect,
-  asyncHandler(getMe)
-);
+// router.get(
+//   "/me",
+//   protect,
+//   asyncHandler(getMe)
+// );
 
 export default router;

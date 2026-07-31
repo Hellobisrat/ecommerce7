@@ -5,14 +5,14 @@ export const protect = async (req, res, next) => {
   try {
     let token;
 
-    // 1. Support Authorization header
+    // 1. Authorization header (optional)
     if (req.headers.authorization?.startsWith("Bearer")) {
       token = req.headers.authorization.split(" ")[1];
     }
 
-    // 2. Support HTTP-only cookies
-    if (!token && req.cookies?.token) {
-      token = req.cookies.token;
+    // 2. HTTP-only cookie (main method)
+    if (!token && req.cookies?.accessToken) {
+      token = req.cookies.accessToken;
     }
 
     if (!token) {
@@ -29,12 +29,12 @@ export const protect = async (req, res, next) => {
       return res.status(401).json({ message: "User not found" });
     }
 
-    // 5. Check if user is disabled
+    // 5. Disabled account
     if (user.isDisabled) {
       return res.status(403).json({ message: "Account disabled" });
     }
 
-    // 6. Check if password changed after token issued
+    // 6. Password changed after token issued
     if (user.passwordChangedAt) {
       const changedTimestamp = parseInt(user.passwordChangedAt.getTime() / 1000);
       if (changedTimestamp > decoded.iat) {

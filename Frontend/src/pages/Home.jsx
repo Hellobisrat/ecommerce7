@@ -15,7 +15,8 @@ const Home = () => {
 
   const itemsPerPage = 8;
 
-  const categories = ["all", ...new Set(products.map((p) => p.category))];
+  const categories = ["all", ...new Set((products || []).map((p) => p.category))];
+
 
   // Filter by category + search
   const filteredProducts = products.filter((product) => {

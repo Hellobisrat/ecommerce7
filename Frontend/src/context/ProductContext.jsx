@@ -13,7 +13,7 @@ export const ProductProvider = ({ children }) => {
     try {
       setLoadingProducts(true);
       const { data } = await ProductService.getAll();
-      setProducts(data);
+      setProducts(data.products || []);
     } catch (err) {
       toast.error("Failed to fetch products");
     } finally {

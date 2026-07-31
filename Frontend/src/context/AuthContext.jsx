@@ -8,10 +8,9 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
 
-  // Restore user on refresh using cookies
   const loadUser = useCallback(async () => {
     try {
-      const { data } = await authService.getProfile(); // cookies included
+      const { data } = await authService.getProfile();
       setUser(data);
     } catch {
       setUser(null);
@@ -24,42 +23,25 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, [loadUser]);
 
-  // Login
   const login = async (credentials) => {
     const { data } = await authService.login(credentials);
-
-    // backend sets cookies automatically
     setUser(data.user);
-
     return data.user;
   };
 
-  // Register
   const register = async (info) => {
     const { data } = await authService.register(info);
-
     setUser(data.user);
-
     return data.user;
   };
 
-  // Logout
-  const logout = async () => {
-    await authService.logout(); // optional backend endpoint
+  const logout = () => {
     setUser(null);
     toast.success("Logged out");
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        authLoading,
-        login,
-        register,
-        logout,
-      }}
-    >
+    <AuthContext.Provider value={{ user, authLoading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

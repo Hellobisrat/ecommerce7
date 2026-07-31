@@ -39,22 +39,35 @@ export const addToCart = async (req, res) => {
     let cart = await Cart.findOne({ user: req.user._id });
 
     if (!cart) {
-      cart = await Cart.create({
-        user: req.user._id,
-        items: [{ product: productId, quantity: qty }]
-      });
-    } else {
-      const item = cart.items.find(i => i.product.toString() === productId);
+  cart = await Cart.create({
+    user: req.user._id,
+    items: [{
+      product: productId,
+      quantity: qty,
+      titleAtTime: product.title,
+      priceAtTime: product.price,
+      imageAtTime: product.image
+    }]
+  });
+} else {
+  const item = cart.items.find(i => i.product.toString() === productId);
 
-      if (item) {
-        if (product.stock < item.quantity + qty) {
-          return res.status(400).json({ message: "Not enough stock" });
-        }
-        item.quantity += qty;
-      } else {
-        cart.items.push({ product: productId, quantity: qty });
-      }
+  if (item) {
+    if (product.stock < item.quantity + qty) {
+      return res.status(400).json({ message: "Not enough stock" });
     }
+    item.quantity += qty;
+  } else {
+    cart.items.push({
+      product: productId,
+      quantity: qty,
+      titleAtTime: product.title,
+      priceAtTime: product.price,
+      imageAtTime: product.image
+    });
+  }
+}
+
 
     await cart.save();
     await cart.populate("items.product", "title price image stock");

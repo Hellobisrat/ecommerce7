@@ -6,9 +6,6 @@ export const API = axios.create({
 });
 
 // No token interceptor needed anymore
-API.interceptors.request.use((config) => {
-  return config;
-});
 
 // Handle unauthorized globally
 API.interceptors.response.use(

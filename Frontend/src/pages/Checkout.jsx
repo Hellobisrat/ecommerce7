@@ -12,6 +12,30 @@ const Checkout = () => {
   const { cart, clearCart } = useContext(CartContext);
   const navigate = useNavigate();
 
+  const normalizedItems = cart.items.map(item => {
+  if (item.priceAtTime) {
+    // Logged-in user
+    return {
+      id: item.product?._id,
+      qty: item.quantity,
+      price: item.priceAtTime,
+      title: item.titleAtTime,
+      image: item.imageAtTime
+    };
+  } else {
+    // Guest user
+    const product = products.find(p => p._id === item.productId);
+    return {
+      id: item.productId,
+      qty: item.qty,
+      price: product?.price || 0,
+      title: product?.title || "",
+      image: product?.image || ""
+    };
+  }
+});
+
+
   const total = cart.reduce(
     (sum, item) => sum + Number(item.price) * Number(item.qty),
     0
