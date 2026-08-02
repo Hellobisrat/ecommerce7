@@ -147,7 +147,3 @@ vite.config.ts.timestamp-*
 .env
 
 # dot env added
-# change in dockerfile2l
-# another change in docker
-# comment added 
-# cartdrawer 
