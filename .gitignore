@@ -145,3 +145,4 @@ vite.config.ts.timestamp-*
 .env
 
 # dot env added
+# change in dockerfile
