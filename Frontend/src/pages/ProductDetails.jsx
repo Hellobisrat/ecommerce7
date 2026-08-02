@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ProductContext } from "../context/ProductContext";
-import { CartContext } from "../context/CartContext";
+import { CartContext } from '../context/CartContext'
 import { motion } from "framer-motion";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 

@@ -1,3 +1,13 @@
+import { createContext, useState, useEffect, useCallback, useContext } from "react";
+import { AuthContext } from "./AuthContext";
+import { ProductContext } from "./ProductContext";
+import cartService from "../services/cartService";
+import { toast } from "react-toastify";
+
+// update on cart context
+
+export const CartContext = createContext();
+
 export const CartProvider = ({ children }) => {
   const { user, authLoading } = useContext(AuthContext);
   const { products } = useContext(ProductContext);

@@ -1,5 +1,5 @@
 # Step 1 — Build the React app
-FROM node:18-alpine AS build
+FROM node:22-alpine AS build
 
 WORKDIR /app
 
@@ -7,7 +7,8 @@ COPY package.json package-lock.json ./
 RUN npm install
 
 COPY . .
-RUN npm run build
+RUN npm run build || cat /root/.npm/_logs/*-debug.log
+
 
 # Step 2 — Serve with Nginx
 FROM nginx:stable-alpine
